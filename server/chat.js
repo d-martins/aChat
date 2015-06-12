@@ -40,7 +40,10 @@ function index(req, res){
 
 function entries(req, res){
 	if(req.method == "GET"){
-		res.writeHead(200, {'content-type': 'text/json'});
+		//Allows requests from the localhost client
+		res.writeHead(200, {'content-type': 'text/json',
+							'Access-Control-Allow-Origin' : 'http://127.0.0.1:8080'
+							});
 		//Sends the json object as the response
 		res.end(JSON.stringify(messages));
 	}
