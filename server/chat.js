@@ -39,23 +39,35 @@ function index(req, res){
 }
 
 function entries(req, res){
+	console.log("\n" + "New access to entries:\nRequest Method: " + req.method +"\n");
 	if(req.method == "GET"){
-		//Allows requests from the localhost client
+		//Allows requests from anyone
 		res.writeHead(200, {'content-type': 'text/json',
-							'Access-Control-Allow-Origin' : 'http://127.0.0.1:8080'
+							'Access-Control-Allow-Origin' : '*'
 							});
 		//Sends the json object as the response
 		res.end(JSON.stringify(messages));
 	}
-
+	else if(req.method == "OPTIONS"){
+		res.writeHead(200,{ 'Access-Control-Allow-Origin' : '*',
+							'Access-Control-Allow-Methods' : 'HEAD, POST,GET,PUT,OPTIONS',
+							'Access-Control-Allow-Headers' : 'Content-Type'
+						});
+		res.end();
+	}
 	else if(req.method == "POST"){
+		res.writeHead(200, {'content-type': 'text/json',
+							'Access-Control-Allow-Origin' : '*'
+						});
 		//Formidable parses form data for easier processing
 		var form = new formidable.IncomingForm();
 		//Parses the form data
 		form.parse(req, function(err, field, files){
-			res.writeHead(200, {'content-type': 'text/json'});
-			//Updates the messages array with the new entry
-			addMessage(field.message);
+			console.log("fields: " + JSON.stringify(field) +"\n");
+			if(field.message){
+				//Updates the messages array with the new entry
+				addMessage(field.message);
+			}
 			//Sends the updated json object as the response
 			res.end(JSON.stringify(messages));
 		});

@@ -17,7 +17,7 @@
 		"postinstall": "bower install",
 
 		"prestart": "npm install",
-		"start": "http-server -p 8080 -a 127.0.0.1"
+		"start": "http-server ./app -p 8080 -a 127.0.0.1"
 	}
 
 }
