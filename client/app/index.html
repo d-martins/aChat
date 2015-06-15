@@ -17,6 +17,15 @@
 	<script src="js/services.js"></script>	
 	<script src="js/controllers.js"></script>
 
+	<script src="http://localhost:8000/socket.io/socket.io.js"></script>
+	<script>
+		var socket= io('http://localhost:8000');
+		socket.on('greetings', function(data){
+			console.log(data);
+			socket.emit('an event', {my: 'data'});
+		});
+	</script>
+
 </head>
 <body ng-controller = "entriesCtrl">
 	<div class="chat-box">

@@ -1,14 +1,14 @@
 //imports 
 var formidable = require('formidable');
-var http = require('http');
+var http = require('http').createServer(handler);
 var urlUtils = require('url');
 var fs = require('fs');
+var io = require('socket.io')(http);
 
 //variables
 var port = process.argv[2];
 var messages = [];
 var limit = 10;
-
 var routes = {
 	'/' : index,
 	'/index' : index,
@@ -16,7 +16,7 @@ var routes = {
 }
 
 //Sets up a server and listens for connection on the designated port
-http.createServer(function(req, res){
+function handler(req, res){
 	//Parses the url into an object, easier to extract information from.
 	var parsedUrl = urlUtils.parse(req.url, true);
 
@@ -25,9 +25,20 @@ http.createServer(function(req, res){
 	if(!method)
 		method = notFound;	
 	//Run appropriate routine according to path
-	method(req, res);	
+	method(req, res, parsedUrl);	
 
-}).listen(port);
+};
+http.listen(port);
+
+//When a connection is established with a socket
+io.on('connection',function(socket){
+	console.log("a user connected");
+	socket.emit('greetings', {hello: 'world'});
+	socket.on('an event', function(data){
+		console.log("an event has occurred with the following data:");
+		console.log(data);
+	});
+});
 
 //--------------------------
 //		***Routes***
@@ -73,10 +84,17 @@ function entries(req, res){
 		});
 	}
 }
-
-function notFound(req,res){
-	res.writeHead(404, 'Not found');
-	res.end('Resource not found');
+//Function to execute for an undefined path
+function notFound(req,res,url){
+	//Tries to load the file on the specefied path and returns 404 not found if it fails
+	fs.readFile( __dirname + url.pathname,function(err,data){
+		if(err){
+			res.writeHead(404, 'Not Found');
+     		res.end('Error loading resource');
+		}
+		res.writeHead(200);
+		res.end(data)
+	});	
 }
 
 //--------------------------
