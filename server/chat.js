@@ -31,13 +31,24 @@ function handler(req, res){
 http.listen(port);
 
 //When a connection is established with a socket
-io.on('connection',function(socket){
-	console.log("a user connected");
-	socket.emit('greetings', {hello: 'world'});
-	socket.on('an event', function(data){
-		console.log("an event has occurred with the following data:");
+io.on('connection',function(socket)
+{	
+	console.log('a user connected: '+ socket.client.id);	
+
+	socket.join('global');
+	//Handles newMessage events received from clients
+	socket.on('newMessage',function(data){
+		console.log("new message received " + socket.id);
 		console.log(data);
+		//returns data back to the client
+		socket.emit('newMessage',data);
+		//sends data to other connected clients
+		socket.broadcast.emit('newMessage',data);
 	});
+	//Handles socket disconnections
+	socket.on('disconnect',function(){
+		console.log("user has disconnected: "+ socket.conn.id + "\n");
+	})
 });
 
 //--------------------------

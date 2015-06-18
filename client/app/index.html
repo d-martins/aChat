@@ -13,23 +13,16 @@
 	<script src="bower_components/angular-animate/angular-animate.js"></script>
 	<script src="bower_components/angular-resource/angular-resource.js"></script>
 
-	<script src="js/app.js"></script>		
+	<script src="js/app.js"></script>
 	<script src="js/services.js"></script>	
 	<script src="js/controllers.js"></script>
 
 	<script src="http://localhost:8000/socket.io/socket.io.js"></script>
-	<script>
-		var socket= io('http://localhost:8000');
-		socket.on('greetings', function(data){
-			console.log(data);
-			socket.emit('an event', {my: 'data'});
-		});
-	</script>
 
 </head>
 <body ng-controller = "entriesCtrl">
 	<div class="chat-box">
-		<li ng-repeat="entry in entries">
+		<li ng-repeat="entry in messages">
 			{{entry.message}}
 		</li>
 		<input ng-model="message"></input>
