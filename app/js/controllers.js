@@ -3,7 +3,7 @@ var chatControllers = angular.module('chatControllers',[]);
 
 chatControllers.controller('chatCtrl', ['$scope','$routeParams', function($scope, $routeParams){
 	
-	var socket= io('http://localhost:8000');
+	var socket= io('http://nodejs-testificate.rhcloud.com:8000');
 	$scope.messages = [];
 	var color = '#555';
 	
