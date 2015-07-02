@@ -1,1 +1,4 @@
-source: app
+gems:
+  - jekyll-redirect-from
+
+redirect_from: "/app"
