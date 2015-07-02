@@ -1,0 +1,26 @@
+﻿Setting up project for github pages
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch gh-pages
+#
+# Initial commit
+#
+# Changes to be committed:
+#	new file:   .bowerrc
+#	new file:   .gitignore
+#	new file:   README.md
+#	new file:   _config.yml
+#	new file:   app/.gitignore
+#	new file:   app/config.rb
+#	new file:   app/css/app.css
+#	new file:   app/index.html
+#	new file:   app/js/app.js
+#	new file:   app/js/controllers.js
+#	new file:   app/js/services.js
+#	new file:   app/partials/chat.html
+#	new file:   app/sass/app.scss
+#	new file:   bower.json
+#	new file:   index.html
+#	new file:   package.json
+#
+
