@@ -7,124 +7,66 @@ var io = require('socket.io')(http);
 
 //variables
 var port = process.argv[2];
-var messages = [];
-var limit = 10;
-var routes = {
-	'/' : index,
-	'/index' : index,
-	'/entries' : entries
-}
 
 //Sets up a server and listens for connection on the designated port
-function handler(req, res){
-	//Parses the url into an object, easier to extract information from.
-	var parsedUrl = urlUtils.parse(req.url, true);
-
-	var method = routes[parsedUrl.pathname];
-	//If the route is not defined, set not found as response.
-	if(!method)
-		method = notFound;	
-	//Run appropriate routine according to path
-	method(req, res, parsedUrl);	
-
-};
+function handler(req, res){};
 http.listen(port);
 
 //When a connection is established with a socket
 io.on('connection',function(socket)
 {	
 	console.log('a user connected: '+ socket.client.id);	
+	//Atributes a color to new connections based on socket.id string
+	socket.emit('colorAttr', '#'+ hexFromString(socket.id));
 
-	socket.join('global');
 	//Handles newMessage events received from clients
-	socket.on('newMessage',function(data){
+	socket.on('newMessage',function(data, room){
 		console.log("new message received " + socket.id);
 		console.log(data);
 		//returns data back to the client
 		socket.emit('newMessage',data);
 		//sends data to other connected clients
-		socket.broadcast.emit('newMessage',data);
+		socket.broadcast.to(room).emit('newMessage',data);
+	});
+	//Adds socket to a room
+	socket.on('joinRoom',function(room){
+		console.log(socket.id + ' - user has joined room ' + room);
+		socket.join(room);
+		socket.broadcast.to(room).emit('sysMessage' , {'message':socket.id + ' - user has joined this room'});
+
+		//Adds array of joined rooms to socket if it doesn't exist yet
+		//This array serves to track what rooms a socket was connected to when it disconnected
+		if(!socket.myRooms) socket.myRooms=[];		
+		socket.myRooms.push(room);
+	});
+	//Removes socket from room
+	socket.on('leaveRoom',function(room){
+		console.log(socket.id + ' - user has left room ' + room);
+		socket.leave(room);	
+
+		socket.myRooms.splice(socket.myRooms.indexOf(room),1);
 	});
 	//Handles socket disconnections
 	socket.on('disconnect',function(){
+		console.log(socket.myRooms);
+		if(socket.myRooms)
+			socket.myRooms.forEach(function(room){
+				io.sockets.in(room).emit('sysMessage', {'message': socket.id+ ' - user left the room'});
+			});
 		console.log("user has disconnected: "+ socket.conn.id + "\n");
-	})
+	});
 });
 
-//--------------------------
-//		***Routes***
-//--------------------------
-function index(req, res){
-	res.writeHead(200, {'content-type': 'text/html'});
-	//Sends index.html as the response
-	fs.createReadStream('index.html').pipe(res);
-}
-
-function entries(req, res){
-	console.log("\n" + "New access to entries:\nRequest Method: " + req.method +"\n");
-	if(req.method == "GET"){
-		//Allows requests from anyone
-		res.writeHead(200, {'content-type': 'text/json',
-							'Access-Control-Allow-Origin' : '*'
-							});
-		//Sends the json object as the response
-		res.end(JSON.stringify(messages));
+//Returns a hex color value based on first 6 elements of a string.
+//Valid hex values are kept. Other values are assigned at random.
+function hexFromString(str){
+	var result = "";	
+	while(str.length<6)
+		str +="0";
+	for(var i = 0; i<6; i++){
+		//Does not accept hex values above B to avoid very light colors.
+		//the randomly assigned values also only go up to B (11 in decimal).
+		result += /^[0-9A-Ba-b]+$/.test(str[i]) ? str[i] : Math.floor(Math.random()*11).toString(16);		
 	}
-	else if(req.method == "OPTIONS"){
-		res.writeHead(200,{ 'Access-Control-Allow-Origin' : '*',
-							'Access-Control-Allow-Methods' : 'HEAD, POST,GET,PUT,OPTIONS',
-							'Access-Control-Allow-Headers' : 'Content-Type'
-						});
-		res.end();
-	}
-	else if(req.method == "POST"){
-		res.writeHead(200, {'content-type': 'text/json',
-							'Access-Control-Allow-Origin' : '*'
-						});
-		//Formidable parses form data for easier processing
-		var form = new formidable.IncomingForm();
-		//Parses the form data
-		form.parse(req, function(err, field, files){
-			console.log("fields: " + JSON.stringify(field) +"\n");
-			if(field.message){
-				//Updates the messages array with the new entry
-				addMessage(field.message);
-			}
-			//Sends the updated json object as the response
-			res.end(JSON.stringify(messages));
-		});
-	}
-}
-//Function to execute for an undefined path
-function notFound(req,res,url){
-	//Tries to load the file on the specefied path and returns 404 not found if it fails
-	fs.readFile( __dirname + url.pathname,function(err,data){
-		if(err){
-			res.writeHead(404, 'Not Found');
-     		res.end('Error loading resource');
-		}
-		res.writeHead(200);
-		res.end(data)
-	});	
-}
-
-//--------------------------
-//		***Other***
-//--------------------------
-//Sorts an array based on one its properties.
-function orderArrayByField(array, field){
-	return array.sort(function(a,b){	
-		//converts the values to a string and compares them for sorting.	
-		return  (""+a[field]).localeCompare((""+b[field]));
-	});
-}
-
-//Adds a new entry to the messages array
-function addMessage(msg){
-	var time = (new Date()).getTime();
-	//If the array is too big, removes the oldest entries
-	while (messages.length >= limit){
-		messages.shift();		
-	}
-	messages.push({timestamp: time, message: msg});
+	return result;
 }

@@ -1,0 +1,81 @@
+/* line 3, ../sass/app.scss */
+body {
+  background-color: black;
+}
+
+/* line 9, ../sass/app.scss */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* line 16, ../sass/app.scss */
+.chat-body {
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+/* line 27, ../sass/app.scss */
+.chat-body .chat-box {
+  overflow-y: auto;
+  -webkit-order: 2;
+  order: 2;
+  -webkit-flex: 1;
+  flex: 1;
+}
+/* line 35, ../sass/app.scss */
+.chat-body .chat-box .chat-entry {
+  margin-top: 10px;
+  margin-left: 20px;
+}
+/* line 39, ../sass/app.scss */
+.chat-body .chat-box .chat-entry .message {
+  background-color: orange;
+  color: white;
+  border: 5px solid white;
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-size: 2em;
+  display: inline-block;
+}
+/* line 49, ../sass/app.scss */
+.chat-body .chat-box .chat-entry.system {
+  margin-top: 5px;
+  margin-left: 15px;
+}
+/* line 52, ../sass/app.scss */
+.chat-body .chat-box .chat-entry.system .message {
+  font-size: 1;
+  background-color: rgba(1, 1, 1, 0);
+  border: 0;
+}
+/* line 56, ../sass/app.scss */
+.chat-body .chat-box .chat-entry.system .message:before {
+  content: "- -";
+}
+/* line 63, ../sass/app.scss */
+.chat-body .input-box {
+  background-color: white;
+  padding: 10px;
+  -webkit-order: 1;
+  order: 1;
+}
+/* line 72, ../sass/app.scss */
+.chat-body .input-box textarea {
+  resize: none;
+  background-color: white;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+/* line 82, ../sass/app.scss */
+.chat-body .input-box button {
+  text-transform: uppercase;
+  display: block;
+  background-color: white;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+}

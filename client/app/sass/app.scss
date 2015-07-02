@@ -1,0 +1,91 @@
+@import "compass/css3/flexbox";
+
+body{
+	background-color: black;
+	//height: 100vh;
+	//overflow: hidden;
+}
+
+ul{
+	list-style-type: none;
+	padding: 0;
+}
+.container-fluid{
+	//padding: 0;
+}
+.chat-body{
+	@include flexbox((
+    	display: flex,
+    	flex-direction: column
+    ));
+
+    
+    height: 100vh;
+    overflow: hidden;
+    //background-color: orange;
+    //position: relative;
+	.chat-box{
+		overflow-y: auto;
+		@include order(2);
+		@include flex(1);
+		//width: 100%;
+		//overflow: hidden;
+		//position: relative;
+
+		.chat-entry{
+			margin-top: 10px;
+			margin-left: 20px; 
+			
+			.message{
+				background-color: orange;
+				color: white;
+				border: 5px solid white;
+				border-radius: 10px;
+				padding: 5px 10px;
+				font-size: 2em;
+				display: inline-block;
+			}
+
+			&.system{
+				margin-top: 5px;
+				margin-left: 15px;
+				.message{
+					font-size: 1;
+					background-color: rgba(1,1,1,0);
+					border:0;
+					&:before{
+						content: "- -";
+					}
+				}
+			}
+		}
+	}
+	.input-box{
+		background-color: white;
+		//margin-left: auto;
+		//margin-right: auto;
+		//width: 100%;
+		//content: center;
+		padding: 10px;
+		@include order(1);
+
+		textarea{
+			//width: 500px;
+			//height: 60px;
+			//display: block;
+			resize: none;
+			background-color: white;
+			border: 1px solid #aaa;
+			border-radius: 3px;
+			margin-bottom: 10px ;
+		}
+		button{
+			text-transform: uppercase;
+			//width: 150px;
+			display: block;
+			background-color: white;
+			border: 1px solid #aaa;
+			border-radius: 10px;
+		}
+	}
+}

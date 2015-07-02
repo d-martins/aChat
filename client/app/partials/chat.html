@@ -1,0 +1,14 @@
+<div class="chat-body container-fluid">	
+	<div id="test" class="chat-box row" scroll-glue>		
+		<ul class="entry-list">
+			<li ng-repeat="entry in messages" class="chat-entry col-xs-offset-1 col-xs-10 col-sm-6 col-sm-offset-3" ng-class="{system: entry.system}">
+				<div class="message myColorizer" color={{entry.color}} >{{entry.message}}</div>
+			</li>
+			</ul>
+	</div>
+	<div class="row input-box">
+			<textarea class="col-xs-offset-1 col-xs-10 col-sm-6 col-sm-offset-3" rows="3" ng-model="message"></textarea>
+			<button class="col-xs-offset-1 col-xs-10 col-sm-2 col-sm-offset-5" ng-click="post()">Post!</button>
+		</div>
+	</div>
+</div>
