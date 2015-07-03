@@ -1,0 +1,17 @@
+{
+  "version": "0.0.0",
+  "name": "anon-chat-main",
+  "private": true,
+  "description": "An anonymous chat server in node",
+  "keywords": [
+    "chat",
+    "anon",
+    "anonymous"
+  ],
+  "main": "server/anon-chat-server",
+  "author": {
+    "name": "Diogo Martins",
+    "email": "diogo.f.mar@gmail.com",
+    "url": "http://diogom.com/"
+  }
+}
