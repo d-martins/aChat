@@ -1,9 +1,8 @@
 const dTime = 1000;
 var chatControllers = angular.module('chatControllers',[]);
 
-chatControllers.controller('chatCtrl', ['$scope','$routeParams', function($scope, $routeParams){
-	
-	var socket= io('http://nodejs-testificate.rhcloud.com:8000');
+chatControllers.controller('chatCtrl', ['$scope','$routeParams','$location', function($scope, $routeParams, $location){	
+	var socket= io('http://'+$location.host()+':8000');
 	$scope.messages = [];
 	var color = '#555';
 	
