@@ -1,0 +1,11 @@
+echo "hi this is a test"
+OLD_HOME=$HOME
+
+
+echo "INFO: Running 'bower install'"
+cd $OPENSHIFT_REPO_DIR
+export HOME=$OPENSHIFT_REPO_DIR
+bower install
+
+export HOME=$OLD_HOME
+echo "INFO: Done!"

@@ -2,7 +2,8 @@ const dTime = 1000;
 var chatControllers = angular.module('chatControllers',[]);
 
 chatControllers.controller('chatCtrl', ['$scope','$routeParams','$location', function($scope, $routeParams, $location){	
-	var socket= io('http://'+$location.host()+':8000');
+	var port = $location.host() == 'localhost' ? 80 : 8000;
+	var socket= io('http://'+$location.host()+':' + port);	
 	$scope.messages = [];
 	var color = '#555';
 	

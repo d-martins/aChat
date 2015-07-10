@@ -1,21 +1,21 @@
 //imports 
 var express = require('express');
-var io = require('socket.io');
+var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io').listen(server,{'transports': [
+	'polling',
+    'websocket']});
 
-//variables
-var cliPort = process.env.OPENSHIFT_NODEJS_PORT || 80;
-var srvPort = process.argv[2];
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+//Sets up express app
+app.set('port', process.env.OPENSHIFT_NODEJS_PORT || 80);
+app.set('ipaddr', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
+app.use(express.static('client/'));
 
-//Sets up a server and listens for webSocket connections on the designated port
-var serverApp = express();
-var server =  serverApp.listen(srvPort, server_ip_address);
-io = io(server);
-
-//Sets up a server that serves static files from designated path
-var clientApp = express();
-clientApp.use(express.static('node_modules/anon-chat/app/'));
-var client =  clientApp.listen(cliPort, server_ip_address);
+//Starts listening on the given port and ip address.
+//Because we're working with socket.io,we need to use 'server.listen' instead of 'app.listen'.
+server.listen(app.get('port'), app.get('ipaddr'),function(){
+	console.log("listening on port " + app.get('port') + ' and ip address ' + app.get('ipaddr'));
+});
 
 //When a connection is established with a socket
 io.on('connection',function(socket)
